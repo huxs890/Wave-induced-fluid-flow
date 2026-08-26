@@ -1,5 +1,5 @@
 # Wave-induced-fluid-flow
-This repository contains Python implementations of several **wave-induced fluid flow (WIFF)** models for studying seismic wave dispersion and attenuation in porous rocks.
+This repository contains Python implementations of several **analytical wave-induced fluid flow (WIFF) models** for studying seismic wave dispersion and attenuation in porous rocks.
 ## Main modules
 - `biot_gassmann.py`
 Biot global flow and Gassmann  models
