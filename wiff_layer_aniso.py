@@ -5,9 +5,9 @@ import numpy as np
 Function Index:
 ==================================
 biot_layer_aniso(rock_up,rock_low,fluid_up,fluid_low,perm,d1,d2,f,Pc,strain0)
-    -> C11,C33,C13,C44,C66,h,pf_C33,pf_C11
+    -> C11,C13,C33,C44,C66,h,pf_C33,pf_C11
 
-biot_aniso_back_layer(Cd_up,fluid_up,perm_up,phi_up,d1,
+biot_aniso_background_layer(Cd_up,fluid_up,perm_up,phi_up,d1,
                         Cd_low,fluid_low,perm_low,phi_low,d2,
                         grain,f):
     -> C11,C13,C33,C44,C66
@@ -93,7 +93,7 @@ def biot_layer_aniso(rock_up,rock_low,fluid_up,fluid_low,perm,d1,d2,f,Pc,strain0
 
     # C33,C13
     A = np.zeros((4,4),dtype=np.complex128)
-    Y = np.zeros((4,4),dtype=np.complex128)
+    Y = np.zeros(4,dtype=np.complex128)
     C33 = np.zeros(len(f),dtype=np.complex128)
     C13 = np.zeros(len(f),dtype=np.complex128)
     for i in range(len(f)):
@@ -143,7 +143,7 @@ def biot_layer_aniso(rock_up,rock_low,fluid_up,fluid_low,perm,d1,d2,f,Pc,strain0
         ratio_a = C12a / C11a
         ratio_b = C12b / C11b
         int_sigmaA_11 = (alpha_up*E1*(ratio_a-1)*(1-np.exp(-q1*a))/q1 
-                         +alpha_up*F1*(ratio_a-1)(np.exp(q1*a)-1)/q1
+                         +alpha_up*F1*(ratio_a-1)*(np.exp(q1*a)-1)/q1
                          +Pc*(ratio_a*(alpha_up*gamma_up-1)-alpha_up*gamma_up)*a)
         int_sigmaB_11 = (alpha_low*E2*(ratio_b-1)*(np.exp(q2*b)-1)/q2
                          +alpha_low*F2*(ratio_b-1)*(1-np.exp(-q2*b))/q2
@@ -160,7 +160,7 @@ def biot_layer_aniso(rock_up,rock_low,fluid_up,fluid_low,perm,d1,d2,f,Pc,strain0
 
     # C11
     A = np.zeros((4,4),dtype=np.complex128)
-    Y = np.zeros((4,4),dtype=np.complex128)
+    Y = np.zeros(4,dtype=np.complex128)
     C11 = np.zeros(len(f),dtype=np.complex128)
     for i in range(len(f)):
         omega = 2*np.pi*f[i]
@@ -222,9 +222,9 @@ def biot_layer_aniso(rock_up,rock_low,fluid_up,fluid_low,perm,d1,d2,f,Pc,strain0
         C44[i] = (a/(a+b)*(1/C44a)+b/(a+b)*(1/C44b))**(-1)
         C66[i] = (a/(a+b)*(C44a)+b/(a+b)*(C44b))
 
-    return C11,C33,C13,C44,C66,h,pf_C33,pf_C11
+    return C11,C13,C33,C44,C66,h,pf_C33,pf_C11
 
-def biot_aniso_back_layer(Cd_up,fluid_up,perm_up,phi_up,d1,
+def biot_aniso_background_layer(Cd_up,fluid_up,perm_up,phi_up,d1,
                           Cd_low,fluid_low,perm_low,phi_low,d2,
                           grain,f):
     '''
@@ -236,7 +236,7 @@ def biot_aniso_back_layer(Cd_up,fluid_up,perm_up,phi_up,d1,
     Parameters
     -----------------------------------------------------------
     upper layer:
-    C_up      = [C11_up, C13_up, C33_up, C44_up, C66_up] [Pa]
+    Cd_up      = [C11_up, C13_up, C33_up, C44_up, C66_up] [Pa]
     fluid_up  = [Kf_up, vis_up, rhof_up]
     perm_up: permeability of the upper layer [m^2]
     phi_up: porosity of the upper layer [-]
@@ -342,4 +342,4 @@ def biot_aniso_back_layer(Cd_up,fluid_up,perm_up,phi_up,d1,
     # C66
     C66  = f1*C66_up+f2*C66_low
 
-    return C11,C13,C33,C44,C66
+    return C11,C13,C33,np.linspace(C44,C44,len(f)),np.linspace(C66,C66,len(f))
